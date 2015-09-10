@@ -1,6 +1,7 @@
-from setuptools import install, find_packages
+from setuptools import setup, find_packages
 
 install_requires = [
+    'gdal',
     'rasterio',
     'shapely',
     'numpy']
@@ -12,7 +13,7 @@ setup(
     license='MIT',
     install_requires=install_requires,
     packages=find_packages(),
-    package_dir={'syrtis':'syrtis'},
+    package_dir={'nimble':'nimble'},
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Science/Research',
