@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import gdal
 import rasterio
 import numpy as N
@@ -12,6 +14,10 @@ def run(*args):
     Runs a command safely in the terminal.
     """
     return check_output(split(" ".join(args)))
+
+def add_ones(mat):
+    _ = N.ones(mat.shape[0])
+    return N.column_stack((mat,_))
 
 def get_transform(fn):
     """
@@ -36,8 +42,13 @@ def compute_transform(tiepoints):
     """
     arr = lambda x: N.array([N.asarray(i) for i in x])
     old, new = (arr(i) for i in zip(*tiepoints))
-    offsets = N.mean(new-old,axis=0)
-    return Affine.translation(*offsets)
+
+    old_ = add_ones(old)
+    trans_matrix, residuals = N.linalg.lstsq(old_,new)[:2]
+
+    print(residuals)
+
+    return Affine(*trans_matrix.transpose().flatten())
 
 def align_image(affine, infile, outfile=None):
     """
