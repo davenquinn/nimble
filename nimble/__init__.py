@@ -52,7 +52,7 @@ def align_image(affine, infile, outfile=None):
     trans = get_transform(infile)
 
     offsets = N.array([affine.xoff,affine.yoff])
-    px_size = offsets/N.array([trans.a,trans.e])
+    px_size = N.array([trans.a,trans.e])
 
     px_trans = Affine.translation(*offsets/px_size)
 
