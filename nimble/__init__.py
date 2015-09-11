@@ -69,10 +69,6 @@ def align_image(affine, infile, outfile=None):
     s = Affine.scale(*px_size)
     px_trans = ~s*o*s
 
-    # Test against simple translation
-    _ = Affine.translation(*offsets/px_size)
-    assert px_trans.almost_equals(_)
-
     if outfile is None:
         outfile = splitext(infile)[0] + ".aligned.vrt"
 
