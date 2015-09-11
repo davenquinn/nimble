@@ -62,6 +62,7 @@ def align_image(affine, infile, outfile=None):
 
     trans = get_transform(infile)
 
+    px_size = N.array([trans.a,trans.e])
     s = Affine.scale(*px_size)
     px_trans = ~s*affine*s
 
