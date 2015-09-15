@@ -11,3 +11,10 @@ This allows for flexible, reversible realignment of geospatial datasets.
 - Align inconsistently georeferenced datasets
 - Create input files for multi-resolution mosaics
 - Add ground control to unreferenced data (*not yet implemented*)
+
+This is particularly useful in scenarios such as planetary imagery, where
+reference frames for multiple datasets are inconsistent.
+
+Currently, the library only provides methods for shifting data by changing
+offsets (fully affine transformations seem to cause problems for `vrt` files,
+at least in QGIS). However, work progresses!
