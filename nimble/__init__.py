@@ -66,5 +66,6 @@ def align_image(affine, infile, outfile=None):
         outfile = splitext(infile)[0] + ".aligned.vrt"
 
     run("gdal_translate", "-of VRT", infile, outfile)
-    set_transform(outfile, trans*px_trans)
+    if affine != Affine.identity():
+        set_transform(outfile, trans*px_trans)
     return outfile
