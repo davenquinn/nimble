@@ -2,6 +2,7 @@ from __future__ import print_function, division
 
 import gdal
 import rasterio
+import fiona
 import numpy as N
 
 from affine import Affine
@@ -34,6 +35,18 @@ def set_transform(fn, affine):
     ds = gdal.Open(fn)
     ds.SetGeoTransform(affine.to_gdal())
 
+def read_tiepoints(dataset, format=None):
+    """
+    Read tiepoints from a Fiona-supported
+    gis dataset.
+    """
+    with fiona.open(dataset) as src:
+        for feature in src:
+            g = feature['geometry']
+            assert g['type'] == 'LineString'
+            c = g['coordinates']
+            yield c[0],c[-1]
+
 def compute_transform(tiepoints):
     """
     Takes an array of (old, new) position tuples
@@ -45,9 +58,6 @@ def compute_transform(tiepoints):
 
     old_ = add_ones(old)
     trans_matrix, residuals = N.linalg.lstsq(old_,new)[:2]
-
-    print(residuals)
-
     return Affine(*trans_matrix.transpose().flatten())
 
 def align_image(affine, infile, outfile=None):
