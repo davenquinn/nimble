@@ -25,9 +25,10 @@ with PostGIS databases) or as a CLI for maximum flexibility.
 This is particularly useful in scenarios such as planetary imagery, where
 reference frames for multiple datasets are inconsistent.
 
-Currently, the library only provides methods for shifting data by changing
-offsets (fully affine transformations seem to cause problems for `vrt` files,
-at least in QGIS). However, work progresses!
+The library provides methods for shifting data by changing
+offsets or using fully affine transformations (the latter seem to cause
+problems for `vrt` files, however, at least in QGIS). Your mileage may
+vary.
 
 ## Examples
 
