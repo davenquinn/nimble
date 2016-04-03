@@ -1,5 +1,8 @@
+from __future__ import print_function, division
+
 import gdal
 import rasterio
+import fiona
 import numpy as N
 
 from affine import Affine
@@ -12,6 +15,10 @@ def run(*args):
     Runs a command safely in the terminal.
     """
     return check_output(split(" ".join(args)))
+
+def add_ones(mat):
+    _ = N.ones(mat.shape[0])
+    return N.column_stack((mat,_))
 
 def get_transform(fn):
     """
@@ -28,7 +35,19 @@ def set_transform(fn, affine):
     ds = gdal.Open(fn)
     ds.SetGeoTransform(affine.to_gdal())
 
-def compute_transform(tiepoints):
+def read_tiepoints(dataset, format=None):
+    """
+    Read tiepoints from a Fiona-supported
+    gis dataset.
+    """
+    with fiona.open(dataset) as src:
+        for feature in src:
+            g = feature['geometry']
+            assert g['type'] == 'LineString'
+            c = g['coordinates']
+            yield c[0],c[-1]
+
+def compute_transform(tiepoints, affine=True):
     """
     Takes an array of (old, new) position tuples
     and returns a translation matrix between the
@@ -36,8 +55,15 @@ def compute_transform(tiepoints):
     """
     arr = lambda x: N.array([N.asarray(i) for i in x])
     old, new = (arr(i) for i in zip(*tiepoints))
-    offsets = N.mean(new-old,axis=0)
-    return Affine.translation(*offsets)
+
+    if affine:
+        old_ = add_ones(old)
+        trans_matrix, residuals = N.linalg.lstsq(old_,new)[:2]
+        return Affine(*trans_matrix.transpose().flatten())
+    else:
+        offsets = N.mean(new-old,axis=0)
+        return Affine.translation(*offsets)
+
 
 def align_image(affine, infile, outfile=None):
     """
@@ -51,16 +77,9 @@ def align_image(affine, infile, outfile=None):
 
     trans = get_transform(infile)
 
-    offsets = N.array([affine.xoff,affine.yoff])
     px_size = N.array([trans.a,trans.e])
-
-    o = Affine.translation(*offsets)
     s = Affine.scale(*px_size)
-    px_trans = ~s*o*s
-
-    # Test against simple translation
-    _ = Affine.translation(*offsets/px_size)
-    assert px_trans.almost_equals(_)
+    px_trans = ~s*affine*s
 
     if outfile is None:
         outfile = splitext(infile)[0] + ".aligned.vrt"

@@ -4,6 +4,8 @@ install_requires = [
     'gdal',
     'rasterio',
     'affine',
+    'fiona',
+    'click',
     'shapely',
     'numpy']
 
@@ -15,6 +17,10 @@ setup(
     install_requires=install_requires,
     packages=find_packages(),
     package_dir={'nimble':'nimble'},
+    entry_points='''
+        [console_scripts]
+        nimble=nimble.cli:cli
+    ''',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Science/Research',
