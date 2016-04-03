@@ -44,7 +44,9 @@ ogr2ogr -f GeoJSON -sql "SELECT * FROM \
 nimble tiepoints.json align HiRISE_001.jp2 HIRISE_001.vrt
 
 # Align associated data
+affine = $(nimble tiepoints.json affine)
+
 psql Gale -c "UPDATE dataset_feature \
-SET geometry=ST_Affine(original_geometry,$(nimble tiepoints.json
-affine)) WHERE dataset_id LIKE '001'"
+  SET geometry=ST_Affine(original_geometry,$affine) \
+  WHERE dataset_id LIKE '001'"
 ```
