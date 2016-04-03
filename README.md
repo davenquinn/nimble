@@ -33,16 +33,18 @@ at least in QGIS). However, work progresses!
 
 Here's an example of CLI usage:
 
-    #!/bin/bash
-    # Create tiepoints file
-    ogr2ogr -f GeoJSON -sql "SELECT * FROM \
-      dataset_offset WHERE from_dataset LIKE '001'" \
-      tiepoints.json PG:dbname=Gale
+```sh
+#!/bin/bash
+# Create tiepoints file
+ogr2ogr -f GeoJSON -sql "SELECT * FROM \
+  dataset_offset WHERE from_dataset LIKE '001'" \
+  tiepoints.json PG:dbname=Gale
 
-    # Align images
-    nimble tiepoints.json align HiRISE_001.jp2 HIRISE_001.vrt
+# Align images
+nimble tiepoints.json align HiRISE_001.jp2 HIRISE_001.vrt
 
-    # Align associated data
-    psql Gale -c "UPDATE dataset_feature \
-		SET geometry=ST_Affine(original_geometry,$(nimble tiepoints.json
-    affine)) WHERE dataset_id LIKE '001'"
+# Align associated data
+psql Gale -c "UPDATE dataset_feature \
+SET geometry=ST_Affine(original_geometry,$(nimble tiepoints.json
+affine)) WHERE dataset_id LIKE '001'"
+```
