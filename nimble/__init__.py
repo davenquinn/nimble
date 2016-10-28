@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-from osgeo import gdal
 import rasterio
 import fiona
 import numpy as N
@@ -32,6 +31,7 @@ def set_transform(fn, affine):
     Sets a dataset georeference with GDAL.
     Takes an Affine object.
     """
+    from osgeo import gdal
     ds = gdal.Open(fn)
     ds.SetGeoTransform(affine.to_gdal())
     ds = None
