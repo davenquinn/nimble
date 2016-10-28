@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-import gdal
+from osgeo import gdal
 import rasterio
 import fiona
 import numpy as N
