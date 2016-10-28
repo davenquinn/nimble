@@ -51,3 +51,23 @@ psql Gale -c "UPDATE dataset_feature \
   SET geometry=ST_Affine(original_geometry,$affine) \
   WHERE dataset_id LIKE '001'"
 ```
+
+### A script to project imagery
+
+A generic script to project geospatial imagery
+can be modified to incorporate a correction
+on a network of control points.
+
+```zsh
+#!/usr/bin/zsh
+
+for fn in $@; do
+  echo $fn
+  out=${fn:r}.tif
+  gdalwarp -of VRT -r lanczos -dstnodata 0 \
+    -t_srs syrtis-tm.prj ${fn} ${out}
+  gdaladdo ${out} 2 4 8 16 32 64
+; done
+```
+
+

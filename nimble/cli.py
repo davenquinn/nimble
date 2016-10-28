@@ -11,11 +11,14 @@ pass_state = click.make_pass_decorator(State, ensure=True)
 @click.group()
 @click.argument('tiepoints', default='-')
 @click.option('--format','-f',default='GeoJSON')
+@click.option('--verbose','-v',default=False)
 @pass_state
-def cli(state, tiepoints, format='GeoJSON'):
+def cli(state, tiepoints, format='GeoJSON', verbose=False):
     tp = list(read_tiepoints(tiepoints, format=format))
     state.tiepoints = tp
     state.affine = compute_transform(tp)
+    if verbose:
+        print_stat("Number of tiepoints",len(tp))
 
 @cli.command()
 @click.argument('infile', type=click.Path(exists=True))

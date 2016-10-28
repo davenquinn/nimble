@@ -34,6 +34,7 @@ def set_transform(fn, affine):
     """
     ds = gdal.Open(fn)
     ds.SetGeoTransform(affine.to_gdal())
+    ds = None
 
 def read_tiepoints(dataset, format=None):
     """
@@ -47,7 +48,7 @@ def read_tiepoints(dataset, format=None):
             c = g['coordinates']
             yield c[0],c[-1]
 
-def compute_transform(tiepoints, affine=True):
+def compute_transform(tiepoints, affine=False):
     """
     Takes an array of (old, new) position tuples
     and returns a translation matrix between the
@@ -57,6 +58,7 @@ def compute_transform(tiepoints, affine=True):
     old, new = (arr(i) for i in zip(*tiepoints))
 
     if affine:
+        # Currently not working
         old_ = add_ones(old)
         trans_matrix, residuals = N.linalg.lstsq(old_,new)[:2]
         return Affine(*trans_matrix.transpose().flatten())
@@ -79,12 +81,12 @@ def align_image(affine, infile, outfile=None):
 
     px_size = N.array([trans.a,trans.e])
     s = Affine.scale(*px_size)
-    px_trans = ~s*affine*s
-
+    px_trans = ~s*affine
     if outfile is None:
         outfile = splitext(infile)[0] + ".aligned.vrt"
 
     run("gdal_translate", "-of VRT", infile, outfile)
     if affine != Affine.identity():
-        set_transform(outfile, trans*px_trans)
+        outtrans = trans*px_trans*s
+        set_transform(outfile, outtrans)
     return outfile
