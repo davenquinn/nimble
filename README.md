@@ -6,10 +6,6 @@ Tie points between datasets are used to compute new affine
 transforms, which are applied using GDAL virtual rasters.
 This allows for flexible, reversible realignment of geospatial datasets.
 
-## Usage scenarios
-
-
-
 ## Installation
 
 Nimble is a python module that exposes a command-line interface. It can
