@@ -36,17 +36,21 @@ Here's an example of CLI usage:
 
 ```sh
 #!/bin/bash
-# Create tiepoints file
+# Create tiepoints file containing the tiepoints we want to use
 ogr2ogr -f GeoJSON -sql "SELECT * FROM \
   dataset_offset WHERE from_dataset LIKE '001'" \
   tiepoints.json PG:dbname=Gale
+# This file should be in the GeoJSON format with lines connecting from-to
+# point pairs.
 
 # Align images
+# By default this does a transform by offsets only, fully affine transforms
+# are not necessary or desired for most situations where imagery is already
+# georeferenced
 nimble tiepoints.json align HiRISE_001.jp2 HIRISE_001.vrt
 
-# Align associated data
+# Align associated data (say we have some contacts in our database)
 affine = $(nimble tiepoints.json affine)
-
 psql Gale -c "UPDATE dataset_feature \
   SET geometry=ST_Affine(original_geometry,$affine) \
   WHERE dataset_id LIKE '001'"
