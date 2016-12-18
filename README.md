@@ -1,6 +1,6 @@
 # Nimble
 
-`nimble` is a framework to improve the consistency
+`nimble` is a small script to improve the consistency
 of ground control for different sets of geospatial imagery.
 Tie points between datasets are used to compute new affine
 transforms, which are applied using GDAL virtual rasters.
