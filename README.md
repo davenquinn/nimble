@@ -6,29 +6,9 @@ Tie points between datasets are used to compute new affine
 transforms, which are applied using GDAL virtual rasters.
 This allows for flexible, reversible realignment of geospatial datasets.
 
-It's also possible to realign derived data (footprints,
-preliminary mapping) to the new reference frame. Currently
-this is only supported via SQL, but new functions to transform
-arbitrary (OGR-supported) vector data are forthcoming.
-
-The functionality of this module is available either
-as a Python API (with special functions for dealing
-with PostGIS databases) or as a CLI for maximum flexibility.
-
 ## Usage scenarios
 
-- Align inconsistently georeferenced datasets (and
-  attendant vector data)
-- Create input files for multi-resolution mosaics
-- Add ground control to unreferenced data (*not yet implemented*)
 
-This is particularly useful in scenarios such as planetary imagery, where
-reference frames for multiple datasets are inconsistent.
-
-The library provides methods for shifting data by changing
-offsets or using fully affine transformations (the latter seem to cause
-problems for `vrt` files, however, at least in QGIS). Your mileage may
-vary.
 
 ## Installation
 
@@ -39,6 +19,11 @@ be installed with
 ```
 
 ## Usage
+
+This module is designed to help align inconsistently georeferenced datasets
+(and attendant derived vector data)
+This is particularly useful in scenarios such as planetary imagery, where
+reference frames for multiple datasets are often inconsistent.
 
 The core command of Nimble is the `align` command. The syntax is
 ```sh
@@ -65,7 +50,24 @@ shift the images:
 > nimble <tiepoints json file> affine
 ```
 
+The library provides methods for either shifting data by `xy`
+offsets or using fully affine transformations. Fully affine
+transformations seem to cause problems for `vrt` files,
+however, at least in QGIS. In practice, substantial skew or
+rotation between reasonable georeferenced datasets is rare and
+potentially signifies undiagnosed trouble elsewhere
+in the image-processing pipeline.
+Your mileage may vary.
+
+It's also possible to realign derived data (footprints,
+preliminary mapping) to the new reference frame. Currently
+this is only supported via SQL, but new functions to transform
+arbitrary (OGR-supported) vector data are forthcoming.
+
 The Python API can support more advanced usage in custom pipelines.
+For instance, special functions are available for dealing
+with PostGIS databases.
+
 Simply
 ```python
 import nimble
