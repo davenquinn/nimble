@@ -30,9 +30,51 @@ offsets or using fully affine transformations (the latter seem to cause
 problems for `vrt` files, however, at least in QGIS). Your mileage may
 vary.
 
+## Installation
+
+Nimble is a python module that exposes a command-line interface. It can
+be installed with
+```
+> pip install "git+https://github.com/davenquinn/nimble.git"
+```
+
+## Usage
+
+The core command of Nimble is the `align` command. The syntax is
+```sh
+> nimble <tiepoints geojson file> align <in.vrt> <out.vrt>
+```
+
+Basically, the `<tiepoints geojson file>` should contain a series of lines that map
+starting positions to realigned positions over a set of imagery.
+`nimble` solves a linear fit to the data and produces a best-fitting transformation
+for the alignment, and produces a *GDAL Virtual Raster* (`vrt`) file that applies this
+to an image.
+This process is CRS-agnostic and can be applied to a wide variety of GIS data.
+
+If you omit the `<out.vrt>`, the script will create one automatically with
+a generic name.
+
+The script currently only produces `vrt` files. If you want aligned imagery
+in other formats, these VRT files can be further transformed (say, to GeoTiffs)
+using `gdal_translate`.
+
+You can also print the affine transform that will be used to
+shift the images:
+```sh
+> nimble <tiepoints json file> affine
+```
+
+The Python API can support more advanced usage in custom pipelines.
+Simply
+```python
+import nimble
+```
+and have a look!
+
 ## Examples
 
-Here's an example of CLI usage:
+Here's an example of CLI usage from a script:
 
 ```sh
 #!/bin/bash
