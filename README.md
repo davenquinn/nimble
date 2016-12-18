@@ -50,7 +50,7 @@ The library provides methods for either shifting data by `xy`
 offsets or using fully affine transformations. Fully affine
 transformations seem to cause problems for `vrt` files,
 however, at least in QGIS. In practice, substantial skew or
-rotation between reasonable georeferenced datasets is rare and
+rotation between already-georeferenced datasets is rare and
 potentially signifies undiagnosed trouble elsewhere
 in the image-processing pipeline.
 Your mileage may vary.
