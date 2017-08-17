@@ -24,17 +24,17 @@ def get_transform(fn):
     Gets a transformation matrix from the image
     """
     with rasterio.open(fn,'r') as ds:
-        return ds.affine
+        return ds.transform
 
 def set_transform(fn, affine):
     """
-    Sets a dataset georeference with GDAL.
+    Sets a dataset georeference.
     Takes an Affine object.
+
+    8/16/2017: Removed GDAL dependency hooray!
     """
-    from osgeo import gdal
-    ds = gdal.Open(fn)
-    ds.SetGeoTransform(affine.to_gdal())
-    ds = None
+    with rasterio.open(fn, 'r+') as ds:
+        ds.transform = affine
 
 def read_tiepoints(dataset, format=None):
     """
